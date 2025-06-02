@@ -5,3 +5,4 @@ dist
 npm-debug.log*
 # Ignore environment variables
 .env
+node_modules
