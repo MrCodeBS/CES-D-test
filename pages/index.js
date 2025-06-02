@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
-import Head from 'next/head';
-import 'tailwindcss/tailwind.css';
-import '../styles/globals.css';
+import { useState, useEffect } from "react";
+import Head from "next/head";
+
 // CES-D questions and scoring options
 
 const CESD_QUESTIONS = [
@@ -24,17 +23,25 @@ const CESD_QUESTIONS = [
   "I had crying spells",
   "I felt sad",
   "I felt that people dislike me",
-  "I could not get 'going'"
+  "I could not get 'going'",
 ];
 
 // Reverse scored items (questions 4, 8, 12, 16 - 0-indexed: 3, 7, 11, 15)
 const REVERSE_SCORED = [3, 7, 11, 15];
 
 const SCORE_OPTIONS = [
-  { value: 0, label: "Rarely or none of the time", sublabel: "(less than 1 day)" },
+  {
+    value: 0,
+    label: "Rarely or none of the time",
+    sublabel: "(less than 1 day)",
+  },
   { value: 1, label: "Some or a little of the time", sublabel: "(1–2 days)" },
-  { value: 2, label: "Occasionally or moderate amount", sublabel: "(3–4 days)" },
-  { value: 3, label: "Most or all of the time", sublabel: "(5–7 days)" }
+  {
+    value: 2,
+    label: "Occasionally or moderate amount",
+    sublabel: "(3–4 days)",
+  },
+  { value: 3, label: "Most or all of the time", sublabel: "(5–7 days)" },
 ];
 
 export default function Home() {
@@ -46,7 +53,7 @@ export default function Home() {
 
   useEffect(() => {
     // Check for saved dark mode preference
-    const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+    const savedDarkMode = localStorage.getItem("darkMode") === "true";
     setDarkMode(savedDarkMode);
   }, []);
 
@@ -58,43 +65,46 @@ export default function Home() {
       setShowInstallPrompt(true);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
     };
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('darkMode', darkMode.toString());
+    localStorage.setItem("darkMode", darkMode.toString());
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
 
   const handleAnswerChange = (questionIndex, value) => {
-    setAnswers(prev => ({
+    setAnswers((prev) => ({
       ...prev,
-      [questionIndex]: parseInt(value)
+      [questionIndex]: parseInt(value),
     }));
   };
 
   const calculateScore = () => {
     let totalScore = 0;
-    
+
     for (let i = 0; i < CESD_QUESTIONS.length; i++) {
       let score = answers[i] || 0;
-      
+
       // Reverse score for positive items
       if (REVERSE_SCORED.includes(i)) {
         score = 3 - score;
       }
-      
+
       totalScore += score;
     }
-    
+
     return totalScore;
   };
 
@@ -102,23 +112,26 @@ export default function Home() {
     if (score <= 15) {
       return {
         level: "Minimal symptoms",
-        description: "Your responses suggest minimal depressive symptoms. This is within the normal range.",
+        description:
+          "Your responses suggest minimal depressive symptoms. This is within the normal range.",
         color: "text-green-600 dark:text-green-400",
-        icon: "fas fa-check-circle"
+        icon: "fas fa-check-circle",
       };
     } else if (score <= 26) {
       return {
         level: "Mild to moderate symptoms",
-        description: "Your responses suggest mild to moderate depressive symptoms. Consider speaking with a healthcare professional if these feelings persist.",
+        description:
+          "Your responses suggest mild to moderate depressive symptoms. Consider speaking with a healthcare professional if these feelings persist.",
         color: "text-yellow-600 dark:text-yellow-400",
-        icon: "fas fa-exclamation-triangle"
+        icon: "fas fa-exclamation-triangle",
       };
     } else {
       return {
         level: "Possible major depression",
-        description: "Your responses suggest significant depressive symptoms. We strongly recommend consulting with a mental health professional for proper evaluation and support.",
+        description:
+          "Your responses suggest significant depressive symptoms. We strongly recommend consulting with a mental health professional for proper evaluation and support.",
         color: "text-red-600 dark:text-red-400",
-        icon: "fas fa-exclamation-circle"
+        icon: "fas fa-exclamation-circle",
       };
     }
   };
@@ -126,7 +139,11 @@ export default function Home() {
   const handleSubmit = () => {
     const answeredQuestions = Object.keys(answers).length;
     if (answeredQuestions < CESD_QUESTIONS.length) {
-      alert(`Please answer all questions. You have ${CESD_QUESTIONS.length - answeredQuestions} questions remaining.`);
+      alert(
+        `Please answer all questions. You have ${
+          CESD_QUESTIONS.length - answeredQuestions
+        } questions remaining.`
+      );
       return;
     }
     setShowResults(true);
@@ -153,13 +170,15 @@ export default function Home() {
     <>
       <Head>
         <title>CES-D Depression Self-Assessment</title>
-        <meta name="description" content="Anonymous depression self-assessment using the CES-D scale" />
+        <meta
+          name="description"
+          content="Anonymous depression self-assessment using the CES-D scale"
+        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#3B82F6" />
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
       </Head>
 
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -176,10 +195,10 @@ export default function Home() {
                 className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
                 aria-label="Toggle dark mode"
               >
-                <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i>
+                <i className={`fas ${darkMode ? "fa-sun" : "fa-moon"}`}></i>
               </button>
             </div>
-            
+
             {!showResults && (
               <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base">
                 Center for Epidemiologic Studies Depression Scale
@@ -220,10 +239,13 @@ export default function Home() {
             <div className="flex items-start">
               <i className="fas fa-shield-alt text-blue-500 mr-3 mt-1"></i>
               <div>
-                <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-1">Privacy Notice</h3>
+                <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-1">
+                  Privacy Notice
+                </h3>
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  This test is completely anonymous and your responses are not stored anywhere. 
-                  All processing happens locally on your device.
+                  This test is completely anonymous and your responses are not
+                  stored anywhere. All processing happens locally on your
+                  device.
                 </p>
               </div>
             </div>
@@ -234,24 +256,33 @@ export default function Home() {
             <div className="space-y-6">
               <div className="text-center mb-6">
                 <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  Please indicate how often you have felt this way during the <strong>past week</strong>:
+                  Please indicate how often you have felt this way during the{" "}
+                  <strong>past week</strong>:
                 </p>
               </div>
 
               {CESD_QUESTIONS.map((question, index) => (
-                <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+                <div
+                  key={index}
+                  className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700"
+                >
                   <h3 className="text-gray-800 dark:text-white font-medium mb-4">
                     {index + 1}. {question}
                   </h3>
-                  
+
                   <div className="space-y-2">
                     {SCORE_OPTIONS.map((option) => (
-                      <label key={option.value} className="flex items-start cursor-pointer group">
+                      <label
+                        key={option.value}
+                        className="flex items-start cursor-pointer group"
+                      >
                         <input
                           type="radio"
                           name={`question-${index}`}
                           value={option.value}
-                          onChange={(e) => handleAnswerChange(index, e.target.value)}
+                          onChange={(e) =>
+                            handleAnswerChange(index, e.target.value)
+                          }
                           className="mt-1 mr-3 text-blue-500 focus:ring-blue-500"
                         />
                         <div className="group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -271,15 +302,22 @@ export default function Home() {
               {/* Progress Indicator */}
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-600 dark:text-gray-300">Progress</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
+                    Progress
+                  </span>
                   <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
                     {Object.keys(answers).length} / {CESD_QUESTIONS.length}
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${(Object.keys(answers).length / CESD_QUESTIONS.length) * 100}%` }}
+                    style={{
+                      width: `${
+                        (Object.keys(answers).length / CESD_QUESTIONS.length) *
+                        100
+                      }%`,
+                    }}
                   ></div>
                 </div>
               </div>
@@ -298,15 +336,19 @@ export default function Home() {
             <div className="space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-700 text-center">
                 <div className="mb-4">
-                  <i className={`${interpretation.icon} text-4xl ${interpretation.color} mb-2`}></i>
+                  <i
+                    className={`${interpretation.icon} text-4xl ${interpretation.color} mb-2`}
+                  ></i>
                   <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
                     Your CES-D Score: {score}
                   </h2>
-                  <h3 className={`text-xl font-semibold ${interpretation.color} mb-4`}>
+                  <h3
+                    className={`text-xl font-semibold ${interpretation.color} mb-4`}
+                  >
                     {interpretation.level}
                   </h3>
                 </div>
-                
+
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
                   {interpretation.description}
                 </p>
@@ -317,8 +359,9 @@ export default function Home() {
                     Important Note
                   </h4>
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    This assessment is a screening tool and not a diagnostic instrument. 
-                    For proper evaluation and treatment, please consult with a qualified mental health professional.
+                    This assessment is a screening tool and not a diagnostic
+                    instrument. For proper evaluation and treatment, please
+                    consult with a qualified mental health professional.
                   </p>
                 </div>
 
@@ -330,7 +373,7 @@ export default function Home() {
                     <i className="fas fa-redo mr-2"></i>
                     Take Again
                   </button>
-                  
+
                   {score > 15 && (
                     <a
                       href="https://www.samhsa.gov/find-help/national-helpline"
@@ -353,16 +396,28 @@ export default function Home() {
                 </h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">0-15:</span>
-                    <span className="text-green-600 dark:text-green-400 font-medium">Minimal symptoms</span>
+                    <span className="text-gray-600 dark:text-gray-300">
+                      0-15:
+                    </span>
+                    <span className="text-green-600 dark:text-green-400 font-medium">
+                      Minimal symptoms
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">16-26:</span>
-                    <span className="text-yellow-600 dark:text-yellow-400 font-medium">Mild to moderate</span>
+                    <span className="text-gray-600 dark:text-gray-300">
+                      16-26:
+                    </span>
+                    <span className="text-yellow-600 dark:text-yellow-400 font-medium">
+                      Mild to moderate
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">27+:</span>
-                    <span className="text-red-600 dark:text-red-400 font-medium">Possible major depression</span>
+                    <span className="text-gray-600 dark:text-gray-300">
+                      27+:
+                    </span>
+                    <span className="text-red-600 dark:text-red-400 font-medium">
+                      Possible major depression
+                    </span>
                   </div>
                 </div>
               </div>
@@ -371,14 +426,17 @@ export default function Home() {
 
           {/* Footer */}
           <footer className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400">
-            <p>Based on the Center for Epidemiologic Studies Depression Scale (CES-D)</p>
+            <p>
+              Based on the Center for Epidemiologic Studies Depression Scale
+              (CES-D)
+            </p>
             <p className="mt-2">
               <i className="fas fa-heart text-red-400 mr-1"></i>
               Take care of your mental health
-              </p>
-            </footer>
-          </div>
+            </p>
+          </footer>
         </div>
-      </>
+      </div>
+    </>
   );
 }
