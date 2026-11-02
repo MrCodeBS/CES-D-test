@@ -179,6 +179,7 @@ export default function Home() {
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#3B82F6" />
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <link rel="stylesheet" href="../styles/globals.css" />
       </Head>
 
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
